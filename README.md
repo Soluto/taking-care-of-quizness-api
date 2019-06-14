@@ -31,7 +31,7 @@ npm install
 
 ### Housekeeping Items
 * This tutorial leverages the [Cognito IDP](https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/index.html) API. <br/>
-* We will add our own resource servers and app clients to a previously created Cognito User Pool (code provided in 01_createUserPool.sh) 
+* We will add our own resource servers and app clients to a previously created Cognito User Pool (code provided in [Step 1](/scripts/01_createUserPool.sh)) 
 * Be sure to replace to update the USERNAME variable in each of these scripts
 
 ### Create Resource Server

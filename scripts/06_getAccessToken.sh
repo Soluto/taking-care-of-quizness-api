@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-USERNAME='Q'
-ENCODED_ID_AND_SECRET=''
+USERNAME=
+ENCODED_ID_AND_SECRET=
 
 curl -X POST \
   https://todo-app-tutorial.auth.us-east-1.amazoncognito.com/oauth2/token \

@@ -1,28 +1,13 @@
-<!--
-title: 'AWS Serverless REST API example in NodeJS'
-description: 'This example demonstrates how to setup a RESTful Web Service allowing you to create, list, get, update and delete Todos. DynamoDB is used to store the data.'
-layout: Doc
-framework: v1
-platform: AWS
-language: nodeJS
-authorLink: 'https://github.com/ozbillwang'
-authorName: 'Bill Wang'
-authorAvatar: 'https://avatars3.githubusercontent.com/u/8954908?v=4&s=140'
--->
+
 # Todo Authorized Serverless REST API
 
-This example demonstrates how to setup a [RESTful Web Services](https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_web_services) allowing you to create, list, get, update and delete Todos. DynamoDB is used to store the data. This is just an example and of course you could use any data storage as a backend.
+This example demonstrates how to setup an [Authorized RESTful Web Services](https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_web_services) allowing you to create, and List Todos. DynamoDB is used to store the data, and the Cognito client credentials flow is used to secure the API. This is just an example and of course you could use any data storage as a backend.
 
 ## Structure
 
-This service has a separate directory for all the todo operations. For each operation exactly one file exists e.g. `todos/delete.js`. In each of these files there is exactly one function which is directly attached to `module.exports`.
+This service has a separate directory for all the todo operations. For each operation exactly one file exists e.g. `todos/create.js`. In each of these files there is exactly one function which is directly attached to `module.exports`.
 
 The idea behind the `todos` directory is that in case you want to create a service containing multiple resources e.g. users, notes, comments you could do so in the same service. While this is certainly possible you might consider creating a separate service for each resource. It depends on the use-case and your preference.
-
-## Use-cases
-
-- API for a Web Application
-- API for a Mobile Application
 
 ## Setup
 
@@ -30,7 +15,7 @@ The idea behind the `todos` directory is that in case you want to create a servi
 npm install
 ```
 
-##Provision Cognito
+## Provision Cognito
 ### Important Terms
 * [User Pool](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) : A user pool is collections of users. The users can be federated, can be manually set up, or imported. User Pools are the foundational entity in Cognito. You may compare this to a typical AD or LDAP directory.
 
@@ -54,7 +39,7 @@ npm install
 
 ```bash
 #!/usr/bin/env bash
-ID=us-east-1_6a6sOQeWH
+ID=
 USERNAME=
 
 AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-resource-server \
@@ -70,8 +55,8 @@ AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-resource-server \
 
 ```bash
 #!/bin/sh
-ID='us-east-1_6a6sOQeWH'
-USERNAME='Q'
+ID=
+USERNAME=
 
 AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-user-pool-client \
 --region us-east-1 \
@@ -92,8 +77,8 @@ AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-user-pool-client \
 
 ```bash
 #!/bin/sh
-ID=''
-USERNAME='Q'
+ID=
+USERNAME=
 
 AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-user-pool-client \
 --region us-east-1 \

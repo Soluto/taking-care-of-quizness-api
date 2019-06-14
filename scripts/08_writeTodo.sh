@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-TODO_URL=""
-ACCESS_TOKEN=""
-API_KEY=""
+TODO_URL=
+ACCESS_TOKEN=
+API_KEY=
 
 curl -X POST \
   ${TODO_URL} \

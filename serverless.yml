@@ -1,0 +1,99 @@
+
+
+service: todoAppTutorial-${self:provider.environment.USERNAME}
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  environment:
+    USERNAME: "Q"
+    DYNAMODB_TABLE: todoTable-${self:provider.environment.USERNAME}
+  stackTags:
+    BUSINESS_UNIT: PSS
+    PLATFORM: PATHFINDER
+    CLIENT: ALL
+    BUSINESS_REGION: GLOBAL
+    stage: ${opt:stage, 'dev'}
+    region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+  apiKeys:
+    - todoApp-apiKey-${self:provider.environment.USERNAME}
+
+functions:
+  create:
+    handler: todos/create.create
+    events:
+      - http:
+          method: post
+          path: todos
+          integration: lambda
+          private: true
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:245511257894:userpool/us-east-1_6a6sOQeWH
+          request:
+            passThrough: WHEN_NO_TEMPLATES
+    tags:
+      BUSINESS_UNIT: PSS
+      PLATFORM: PATHFINDER
+      CLIENT: ALL
+      BUSINESS_REGION: GLOBAL
+
+  list:
+    handler: todos/list.list
+    events:
+      - http:
+          method: get
+          path: todos
+          integration: lambda
+          private: true
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:245511257894:userpool/us-east-1_6a6sOQeWH
+          request:
+            passThrough: WHEN_NO_TEMPLATES
+    tags:
+      BUSINESS_UNIT: PSS
+      PLATFORM: PATHFINDER
+      CLIENT: ALL
+      BUSINESS_REGION: GLOBAL
+
+
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    ApiGatewayMethodTodosPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationScopes:
+          - todo-resourceServer-${self:provider.environment.USERNAME}/todo.write
+    ApiGatewayMethodTodosGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationScopes:
+          - todo-resourceServer-${self:provider.environment.USERNAME}/todo.read
+

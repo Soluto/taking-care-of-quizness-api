@@ -19,7 +19,7 @@ npm install
 ### Important Terms
 * [User Pool](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) : A user pool is collections of users. The users can be federated, can be manually set up, or imported. User Pools are the foundational entity in Cognito. You may compare this to a typical AD or LDAP directory.
 
-* [Identity Pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html) : An identity pool allows access to AWS services via federated or custom identity. For example, at Marqeta, we have our dev AWS account federated with our Google Suite. This way we do not have to manage a separate directory of users who need to access the dev AWS account.
+* [Identity Pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html) : An identity pool allows access to AWS services via federated or custom identity. This way we do not have to manage a separate directory of users who need to access the dev AWS account.
 
 * [Domain](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html) : A Domain is tied to a user pool in a 1:1 relationship, and is used to host the signup/login/challenge pages for the auth experience for the application.
 

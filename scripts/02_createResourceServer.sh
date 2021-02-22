@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
-ID='us-east-1_6a6sOQeWH'
-USERNAME=
-
-AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-resource-server --region us-east-1 --user-pool-id ${ID} --identifier "todo-resourceServer-$USERNAME" --name "Todo Application Resource Server" --scopes "ScopeName=todo.read,ScopeDescription=Get todo item" "ScopeName=todo.write,ScopeDescription=Create todo item"
+ID=''
+aws cognito-idp create-resource-server --region us-east-1 --user-pool-id ${ID} --identifier "quiz-resourceServer" --name "Quiz Application Resource Server" --scopes "ScopeName=questions.read,ScopeDescription=Get all questions" "ScopeName=questions.write,ScopeDescription=Create quiz question"

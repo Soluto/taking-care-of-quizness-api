@@ -1,13 +1,13 @@
 
-# Todo Authorized Serverless REST API
+# Taking Care of Quizness Authorized Serverless REST API
 
 This example demonstrates how to setup an [Authorized RESTful Web Services](https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_web_services) allowing you to create, and List Todos. DynamoDB is used to store the data, and the Cognito client credentials flow is used to secure the API. This is just an example and of course you could use any data storage as a backend.
 
 ## Structure
 
-This service has a separate directory for all the todo operations. For each operation exactly one file exists e.g. `todos/create.js`. In each of these files there is exactly one function which is directly attached to `module.exports`.
+This service has a separate directory for all the quiz question operations. For each operation exactly one file exists e.g. `app/create.js`. In each of these files there is exactly one function which is directly attached to `module.exports`.
 
-The idea behind the `todos` directory is that in case you want to create a service containing multiple resources e.g. users, notes, comments you could do so in the same service. While this is certainly possible you might consider creating a separate service for each resource. It depends on the use-case and your preference.
+The idea behind the `app` directory is that in case you want to create a service containing multiple resources e.g. users, notes, comments you could do so in the same service. While this is certainly possible you might consider creating a separate service for each resource. It depends on the use-case and your preference.
 
 ## Setup
 
@@ -42,10 +42,10 @@ npm install
 ID=
 USERNAME=
 
-AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-resource-server \
+aws cognito-idp create-resource-server \
 --region us-east-1 \
 --user-pool-id ${ID} \
---identifier "todo-resourceServer-$USERNAME" \
+--identifier tquiz-resourceServer" \
 --name "Todo Application Resource Server" \
 --scopes "ScopeName=todo.read,ScopeDescription=Get todo item" "ScopeName=todo.write,ScopeDescription=Create todo item"
 ```
@@ -56,9 +56,8 @@ AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-resource-server \
 ```bash
 #!/bin/sh
 ID=
-USERNAME=
 
-AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-user-pool-client \
+aws cognito-idp create-user-pool-client \
 --region us-east-1 \
 --user-pool-id ${ID} \
 --client-name "todoAppClient-$USERNAME" \
@@ -80,7 +79,7 @@ AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-user-pool-client \
 ID=
 USERNAME=
 
-AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-user-pool-client \
+aws cognito-idp create-user-pool-client \
 --region us-east-1 \
 --user-pool-id ${ID} \
 --client-name "todoAppClient-$USERNAME" \
@@ -116,21 +115,8 @@ Notice that we are using the scopes that we create d on the resource server in <
 [Step 2](#create-resource-server).
 
 
-[Get Access Token Script](/scripts/06_getAccessToken.sh)<br/>
 
-```bash
-#!/usr/bin/env bash
-USERNAME=
-ENCODED_ID_AND_SECRET=
-
-curl -X POST \
-  https://todo-app-tutorial.auth.us-east-1.amazoncognito.com/oauth2/token \
-  -H "authorization: Basic ${ENCODED_ID_AND_SECRET}" \
-  -H 'content-type: application/x-www-form-urlencoded' \
-  -d "grant_type=client_credentials&client_id=3gusu5inhkape0l2ei5hkffug9&scope=todo-resourceServer-${USERNAME}/todo.read todo-resourceServer-${USERNAME}/todo.write"
 ```
-
-
 ## Deploy
 
 In order to deploy the endpoint simply run the [Publish Lambdas Script](/scripts/07_publishLambdas.sh)<br/>
@@ -139,7 +125,7 @@ Make sure you have logged in to AWS via single-sign-on.
 ```bash
 #!/usr/bin/env bash
 cd..
-AWS_PROFILE=asurion-soluto-nonprod.dev SLS_DEBUG=* serverless deploy --stage dev
+SLS_DEBUG=* serverless deploy --stage dev
 ```
 
 The expected result should be similar to:
@@ -177,23 +163,23 @@ Be sure to replace the the variables in the scripts below. <br/>
 
 You can create, and retrieve with the following commands:
 
-### Create a Todo
+### Create a Questions
 
-[Create Todo Script](/scripts/08_writeTodo.sh)<br/>
+[Create Question Script](/scripts/06_createQuestions.sh)<br/>
 
 
 ```bash
 #!/usr/bin/env bash
-TODO_URL=""
-ACCESS_TOKEN=""
-API_KEY=""
+QUESTIONS_URL=
+ACCESS_TOKEN=
+API_KEY=
 
 curl -X POST \
-  ${TODO_URL} \
+  ${QUESTIONS_URL} \
   -H "Authorization: ${ACCESS_TOKEN}" \
   -H "Content-Type: application/json" \
   -H "x-api-key: ${API_KEY}" \
-  -d '{"text":"myTodoText"}'
+  -d '{"text":"myQuestionText", answers: []}'
 ```
 
 Example Result:
@@ -201,18 +187,18 @@ Example Result:
 {"text":"Learn Serverless","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":false,"updatedAt":1479138570824}%
 ```
 
-### List all Todos
+### List all Questions
 
-[List Todos Script](/scripts/09_readTodo.sh)<br/>
+[List Todos Script](/scripts/07_listQuestions.sh)<br/>
 
 ```bash
 #!/usr/bin/env bash
-TODO_URL=""
-ACCESS_TOKEN=""
-API_KEY=""
+QUESTIONS_URL=
+ACCESS_TOKEN=
+API_KEY=
 
 curl -X GET \
-  ${TODO_URL} \
+  ${QUESTIONS_URL} \
   -H "Authorization: ${ACCESS_TOKEN}" \
   -H "x-api-key: ${API_KEY}" 
   ```
@@ -229,7 +215,7 @@ Example output:
 ```bash
 #!/usr/bin/env bash
 cd ..
-AWS_PROFILE=asurion-soluto-nonprod.dev SLS_DEBUG=* serverless remove --stage dev
+SLS_DEBUG=* serverless remove --stage dev
 ```
 
 

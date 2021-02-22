@@ -8,7 +8,7 @@ const params = {
 };
 
 module.exports.list = (event, context, callback) => {
-    // fetch all todos from the database
+    // fetch all questions from the database
     dynamoDb.scan(params, (error, result) => {
         // handle potential errors
         if (error) {
@@ -16,7 +16,7 @@ module.exports.list = (event, context, callback) => {
             callback(null, {
                 statusCode: error.statusCode || 501,
                 headers: { 'Content-Type': 'text/plain' },
-                body: 'Couldn\'t fetch the todos.',
+                body: 'Couldn\'t fetch the questions.',
             });
             return;
         }

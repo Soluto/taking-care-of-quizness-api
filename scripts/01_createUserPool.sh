@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-#AWS_PROFILE=asurion-soluto-nonprod.dev aws cognito-idp create-user-pool --pool-name "todoAppTutorial" --region us-east-1
+aws cognito-idp create-user-pool --pool-name "takingCareOfQuizness" --region us-east-1

@@ -1,18 +1,15 @@
 
-
-service: todoAppTutorial-${self:provider.environment.USERNAME}
+service: takingCareofQuizness
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12
   environment:
-    USERNAME: "Q"
-    DYNAMODB_TABLE: todoTable-${self:provider.environment.USERNAME}
+#    User need to add a a username to
+    AUTHORIZER_ARN: ""
+    DYNAMODB_TABLE: questionsTable
   stackTags:
-    BUSINESS_UNIT: PSS
-    PLATFORM: PATHFINDER
-    CLIENT: ALL
-    BUSINESS_REGION: GLOBAL
+    APPLICATION: TAKING_CARE_OF_QUIZNESS
     stage: ${opt:stage, 'dev'}
     region: us-east-1
   iamRoleStatements:
@@ -26,62 +23,69 @@ provider:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
   apiKeys:
-    - todoApp-apiKey-${self:provider.environment.USERNAME}
+    - takingCareOfQuizness-apiKey
 
 functions:
   create:
-    handler: todos/create.create
+    handler: app/create.create
     events:
       - http:
           method: post
-          path: todos
+          path: questions
           integration: lambda
           private: true
           cors: true
           authorizer:
-            arn: arn:aws:cognito-idp:us-east-1:245511257894:userpool/us-east-1_6a6sOQeWH
+            arn: ${self:provider.environment.AUTHORIZER_ARN}
           request:
             passThrough: WHEN_NO_TEMPLATES
     tags:
-      BUSINESS_UNIT: PSS
-      PLATFORM: PATHFINDER
-      CLIENT: ALL
-      BUSINESS_REGION: GLOBAL
+      APPLICATION: TAKING_CARE_OF_QUIZNESS
+
 
   list:
-    handler: todos/list.list
+    handler: app/list.list
     events:
       - http:
           method: get
-          path: todos
+          path: questions
           integration: lambda
           private: true
           cors: true
           authorizer:
-            arn: arn:aws:cognito-idp:us-east-1:245511257894:userpool/us-east-1_6a6sOQeWH
+            arn: ${self:provider.environment.AUTHORIZER_ARN}
           request:
             passThrough: WHEN_NO_TEMPLATES
     tags:
-      BUSINESS_UNIT: PSS
-      PLATFORM: PATHFINDER
-      CLIENT: ALL
-      BUSINESS_REGION: GLOBAL
-
+      APPLICATION: TAKING_CARE_OF_QUIZNESS
 
 resources:
   Resources:
-    TodosDynamoDbTable:
+    QuestionsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: questionId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: category
+            AttributeType: S
+          - AttributeName: questionText
+            AttributeType: S
+          - AttributeName: answers
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: questionId
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: UserIdIndex
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: category
+                KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
@@ -90,10 +94,10 @@ resources:
       Type: "AWS::ApiGateway::Method"
       Properties:
         AuthorizationScopes:
-          - todo-resourceServer-${self:provider.environment.USERNAME}/todo.write
+          - quiz-resourceServer/questions.write
     ApiGatewayMethodTodosGet:
       Type: "AWS::ApiGateway::Method"
       Properties:
         AuthorizationScopes:
-          - todo-resourceServer-${self:provider.environment.USERNAME}/todo.read
+          - quiz-resourceServer/questions.read
 

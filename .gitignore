@@ -9,9 +9,6 @@ coverage
 # production
 build
 
-#nodebb data
-nodebb/data
-
 # misc
 .DS_Store
 .env
@@ -22,3 +19,8 @@ npm-debug.log
 .serverless
 
 .iml
+
+hooks
+info
+objects
+refs

@@ -45,9 +45,9 @@ USERNAME=
 aws cognito-idp create-resource-server \
 --region us-east-1 \
 --user-pool-id ${ID} \
---identifier tquiz-resourceServer" \
---name "Todo Application Resource Server" \
---scopes "ScopeName=todo.read,ScopeDescription=Get todo item" "ScopeName=todo.write,ScopeDescription=Create todo item"
+--identifier "quizResourceServer" \
+--name "Quiz Application Resource Server" \
+--scopes "ScopeName=questions.read,ScopeDescription=Get all questions" "ScopeName=questions.write,ScopeDescription=Create question"
 ```
 
 ### Create Application Client
@@ -60,54 +60,17 @@ ID=
 aws cognito-idp create-user-pool-client \
 --region us-east-1 \
 --user-pool-id ${ID} \
---client-name "todoAppClient-$USERNAME" \
+--client-name "quiznessAppClient" \
 --generate-secret \
 --refresh-token-validity 1 \
 --read-attributes '[ "address","birthdate","email","email_verified","family_name","gender","given_name","locale","middle_name","name","nickname","phone_number","phone_number_verified","picture","preferred_username","profile","updated_at","website","zoneinfo"]' \
 --write-attributes '[ "address","birthdate","email","family_name","gender","given_name","locale","middle_name","name","nickname","phone_number","picture","preferred_username","profile","updated_at","website","zoneinfo"]' \
 --allowed-o-auth-flows "client_credentials" \
---allowed-o-auth-scopes "todo-resourceServer-${USERNAME}/todo.read" "todo-resourceServer-${USERNAME}/todo.write" \
+--allowed-o-auth-scopes "quizResourceServer/questions.read" "quizResourceServer/questions.write" \
 --supported-identity-providers "COGNITO"
 
 ```
 
-### Create Application Client
-[Cognito App Client Script](/scripts/03_createClientApp.sh)<br/>
-
-```bash
-#!/bin/sh
-ID=
-USERNAME=
-
-aws cognito-idp create-user-pool-client \
---region us-east-1 \
---user-pool-id ${ID} \
---client-name "todoAppClient-$USERNAME" \
---generate-secret \
---refresh-token-validity 1 \
---read-attributes '[ "address","birthdate","email","email_verified","family_name","gender","given_name","locale","middle_name","name","nickname","phone_number","phone_number_verified","picture","preferred_username","profile","updated_at","website","zoneinfo"]' \
---write-attributes '[ "address","birthdate","email","family_name","gender","given_name","locale","middle_name","name","nickname","phone_number","picture","preferred_username","profile","updated_at","website","zoneinfo"]' \
---allowed-o-auth-flows "client_credentials" \
---allowed-o-auth-scopes "todo-resourceServer-${USERNAME}/todo.read" "todo-resourceServer-${USERNAME}/todo.write" \
---supported-identity-providers "COGNITO"
-
-```
-
-### Encode Client Secret
-Notice that I am using HTTP Basic to send the client_id and client_secret. This is base64(ClientId:ClientSecret).
-
-If you have openssl installed, you can use the script below, if not any free base64 encoder will do. <br/>
-
-Be sure to update the CLIENT_ID and CLIENT_SECRET variables in the script. <br>
-
-[Client Secret Encoder Script](/scripts/05_encodeSecret.sh)<br/>
-
-```bash
-#!/bin/sh
-CLIENT_ID=''
-CLIENT_SECRET=''
-echo "${CLIENT_ID}:${CLIENT_SECRET}" | openssl base64
-```
 
 ### Get Access Token
 We will use this token as the Authorization header in our curl commands.<br/>
@@ -145,11 +108,11 @@ region: us-east-1
 api keys:
   None
 endpoints:
-  POST - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/todos
-  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/todos
-  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/todos/{id}
-  PUT - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/todos/{id}
-  DELETE - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/todos/{id}
+  POST - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/questions
+  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/questions
+  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/questions/{id}
+  PUT - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/questions/{id}
+  DELETE - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/dev/questions/{id}
 functions:
   serverless-rest-api-with-dynamodb-dev-update: arn:aws:lambda:us-east-1:488110005556:function:serverless-rest-api-with-dynamodb-dev-update
   serverless-rest-api-with-dynamodb-dev-get: arn:aws:lambda:us-east-1:488110005556:function:serverless-rest-api-with-dynamodb-dev-get

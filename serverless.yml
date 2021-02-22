@@ -94,10 +94,10 @@ resources:
       Type: "AWS::ApiGateway::Method"
       Properties:
         AuthorizationScopes:
-          - quiz-resourceServer/questions.write
+          - quizResourceServer/questions.write
     ApiGatewayMethodTodosGet:
       Type: "AWS::ApiGateway::Method"
       Properties:
         AuthorizationScopes:
-          - quiz-resourceServer/questions.read
+          - quizResourceServer/questions.read
 

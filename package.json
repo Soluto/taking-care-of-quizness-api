@@ -5,6 +5,9 @@
   "author": "",
   "license": "MIT",
   "scripts": {
+    "test": "echo \"unit tests have not been implemented\"",
+    "build": "sls package",
+    "deploy": "sls deploy",
     "create-slides": "markdown-to-slides README.md -d  -o presentation.html"
   },
   "dependencies": {

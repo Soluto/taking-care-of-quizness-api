@@ -1,0 +1,38 @@
+name: Pull Request
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.x'
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/yarn
+          key: ${{ runner.os }}-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.x'
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/yarn
+          key: ${{ runner.os }}-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-
+      - run: yarn --frozen-lockfile
+      - run: yarn test

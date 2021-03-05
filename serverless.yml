@@ -3,15 +3,11 @@ service: takingCareofQuizness
 
 provider:
   name: aws
-  runtime: nodejs12
+  runtime: nodejs12.x
   environment:
-#    User need to add a a username to
-    AUTHORIZER_ARN: ""
-    DYNAMODB_TABLE: questionsTable
-  stackTags:
-    APPLICATION: TAKING_CARE_OF_QUIZNESS
-    stage: ${opt:stage, 'dev'}
-    region: us-east-1
+#    User need to add the arn of the Cognito Authorizer
+    AUTHORIZER_ARN: arn:aws:cognito-idp:us-east-1:245511257894:userpool/us-east-1_hqTnRp3AM
+    DYNAMODB_TABLE: QuestionsTable
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -39,8 +35,6 @@ functions:
             arn: ${self:provider.environment.AUTHORIZER_ARN}
           request:
             passThrough: WHEN_NO_TEMPLATES
-    tags:
-      APPLICATION: TAKING_CARE_OF_QUIZNESS
 
 
   list:
@@ -56,8 +50,6 @@ functions:
             arn: ${self:provider.environment.AUTHORIZER_ARN}
           request:
             passThrough: WHEN_NO_TEMPLATES
-    tags:
-      APPLICATION: TAKING_CARE_OF_QUIZNESS
 
 resources:
   Resources:
@@ -72,10 +64,6 @@ resources:
             AttributeType: S
           - AttributeName: category
             AttributeType: S
-          - AttributeName: questionText
-            AttributeType: S
-          - AttributeName: answers
-            AttributeType: S
         KeySchema:
           - AttributeName: questionId
             KeyType: HASH
@@ -84,18 +72,30 @@ resources:
             KeySchema:
               - AttributeName: userId
                 KeyType: HASH
+            Projection:
+              ProjectionType: KEYS_ONLY
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: CategoryIndex
+            KeySchema:
               - AttributeName: category
                 KeyType: HASH
+            Projection:
+              ProjectionType: KEYS_ONLY
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
-    ApiGatewayMethodTodosPost:
+    ApiGatewayMethodQuestionsPost:
       Type: "AWS::ApiGateway::Method"
       Properties:
         AuthorizationScopes:
           - quizResourceServer/questions.write
-    ApiGatewayMethodTodosGet:
+    ApiGatewayMethodQuestionsGet:
       Type: "AWS::ApiGateway::Method"
       Properties:
         AuthorizationScopes:

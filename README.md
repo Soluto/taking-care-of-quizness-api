@@ -35,8 +35,6 @@ npm install
 * Be sure to replace to update the USERNAME variable in each of these scripts
 
 ### Create Resource Server
-[Cognito Resource Server Script](/scripts/02_createResourceServer.sh)<br/>
-
 ```bash
 #!/usr/bin/env bash
 ID=
@@ -51,7 +49,6 @@ aws cognito-idp create-resource-server \
 ```
 
 ### Create Application Client
-[Cognito App Client Script](/scripts/03_createClientApp.sh)<br/>
 
 ```bash
 #!/bin/sh
@@ -75,8 +72,6 @@ aws cognito-idp create-user-pool-client \
 ### Get Access Token
 We will use this token as the Authorization header in our curl commands.<br/>
 Notice that we are using the scopes that we create d on the resource server in <br/>
-[Step 2](#create-resource-server).
-
 
 
 ```

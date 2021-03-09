@@ -19,6 +19,18 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
   apiKeys:
     - takingCareOfQuizness-apiKey
+  tags:
+    BUSINESS_UNIT: HACKATHON
+    PLATFORM: HACKATHON
+    CLIENT: HACKATHON
+    BUSINESS_REGION: NORTHAMERICA
+    ENVIRONMENT: ${opt:stage}
+  stackTags:
+    BUSINESS_UNIT: HACKATHON
+    PLATFORM: HACKATHON
+    CLIENT: HACKATHON
+    BUSINESS_REGION: NORTHAMERICA
+    ENVIRONMENT: ${opt:stage}
 
 functions:
   create:

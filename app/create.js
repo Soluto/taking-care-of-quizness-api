@@ -1,21 +1,21 @@
 'use strict';
 
-const uuid = require('uuid');
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+const uuid = require('uuid');
+const jwt = require('jsonwebtoken');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.create = (event, context, callback) => {
     const timestamp = new Date().getTime();
-    // todo get userID from cognito token
-    const userId = '';
-    console.log('Event', event);
-    const data = event.body && event.body.text ? event.body : JSON.parse(event.body);
-    const { category, questionText, answers }= data
+    const decodeAuthToken = jwt.decode( event.headers.Authorization);
+    const userId = decodeAuthToken.username;
 
+    const data = event.body && event.body.questionText ? event.body : JSON.parse(event.body);
+    const { category, questionText, answers } = data;
 
     // todo validate fields
-    if (typeof data.text !== 'string') {
+    if (typeof questionText !== 'string') {
         console.error('Validation Failed');
         callback(null, {
             statusCode: 400,
@@ -28,7 +28,7 @@ module.exports.create = (event, context, callback) => {
     const params = {
         TableName: process.env.DYNAMODB_TABLE,
         Item: {
-            questionId: uuid.v1(),
+            questionId: uuid.v4(),
             userId,
             category,
             questionText,
@@ -38,7 +38,6 @@ module.exports.create = (event, context, callback) => {
         },
     };
 
-    // write the todo to the database
     dynamoDb.put(params, (error) => {
         // handle potential errors
         if (error) {

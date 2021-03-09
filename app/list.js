@@ -8,7 +8,6 @@ const params = {
 };
 
 module.exports.list = (event, context, callback) => {
-    // fetch all questions from the database
     dynamoDb.scan(params, (error, result) => {
         // handle potential errors
         if (error) {

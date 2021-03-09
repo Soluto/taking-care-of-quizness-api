@@ -7,16 +7,14 @@
   "scripts": {
     "test": "echo \"unit tests have not been implemented\"",
     "build": "sls package",
-    "deploy": "sls deploy",
-    "create-slides": "markdown-to-slides README.md -d  -o presentation.html"
+    "deploy": "sls deploy"
   },
   "dependencies": {
-    "uuid": "^2.0.3"
+    "jsonwebtoken": "^8.5.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "api-gateway-stage-tag-plugin": "^1.0.4",
-    "markdown-to-slides": "^1.0.5",
     "serverless": "1.29.2"
   }
 }
-

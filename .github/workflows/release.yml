@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.x'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-
+      - run: npm ci
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_NONPROD_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_NONPROD_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - run: npm run deploy

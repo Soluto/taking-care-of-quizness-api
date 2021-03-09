@@ -4,7 +4,11 @@
   "description": "Serverless CRUD service exposing a REST HTTP interface",
   "author": "",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "test": "echo \"unit tests have not been implemented\"",
+    "build": "sls package",
+    "deploy": "sls deploy"
+  },
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2"

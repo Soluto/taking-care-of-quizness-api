@@ -24,3 +24,8 @@ hooks
 info
 objects
 refs
+
+# cdk
+cdk.out
+
+yarn.lock

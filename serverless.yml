@@ -20,95 +20,14 @@ provider:
   apiKeys:
     - takingCareOfQuizness-apiKey
   tags:
-    BUSINESS_UNIT: HACKATHON
-    PLATFORM: HACKATHON
-    CLIENT: HACKATHON
+    BUSINESS_UNIT: MTSU_WORKSHOP
+    PLATFORM: MTSU_WORKSHOP
+    CLIENT: MTSU_WORKSHOP
     BUSINESS_REGION: NORTHAMERICA
     ENVIRONMENT: ${opt:stage}
   stackTags:
-    BUSINESS_UNIT: HACKATHON
-    PLATFORM: HACKATHON
-    CLIENT: HACKATHON
+    BUSINESS_UNIT: MTSU_WORKSHOP
+    PLATFORM: MTSU_WORKSHOP
+    CLIENT: MTSU_WORKSHOP
     BUSINESS_REGION: NORTHAMERICA
     ENVIRONMENT: ${opt:stage}
-
-functions:
-  create:
-    handler: app/create.create
-    events:
-      - http:
-          method: post
-          path: questions
-          integration: lambda
-          private: true
-          cors: true
-          authorizer:
-            arn: ${self:provider.environment.AUTHORIZER_ARN}
-          request:
-            passThrough: WHEN_NO_TEMPLATES
-
-
-  list:
-    handler: app/list.list
-    events:
-      - http:
-          method: get
-          path: questions
-          integration: lambda
-          private: true
-          cors: true
-          authorizer:
-            arn: ${self:provider.environment.AUTHORIZER_ARN}
-          request:
-            passThrough: WHEN_NO_TEMPLATES
-
-resources:
-  Resources:
-    QuestionsDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: questionId
-            AttributeType: S
-          - AttributeName: userId
-            AttributeType: S
-          - AttributeName: category
-            AttributeType: S
-        KeySchema:
-          - AttributeName: questionId
-            KeyType: HASH
-        GlobalSecondaryIndexes:
-          - IndexName: UserIdIndex
-            KeySchema:
-              - AttributeName: userId
-                KeyType: HASH
-            Projection:
-              ProjectionType: KEYS_ONLY
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
-          - IndexName: CategoryIndex
-            KeySchema:
-              - AttributeName: category
-                KeyType: HASH
-            Projection:
-              ProjectionType: KEYS_ONLY
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
-    ApiGatewayMethodQuestionsPost:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationScopes:
-          - quizResourceServer/questions.write
-    ApiGatewayMethodQuestionsGet:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationScopes:
-          - quizResourceServer/questions.read
-

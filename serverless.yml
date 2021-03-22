@@ -5,7 +5,7 @@ provider:
   runtime: nodejs12.x
   environment:
 #    User need to add the arn of the Cognito Authorizer
-    AUTHORIZER_ARN: arn:aws:cognito-idp:us-east-1:245511257894:userpool/us-east-1_hqTnRp3AM
+    AUTHORIZER_ARN: 
     DYNAMODB_TABLE: QuestionsTable
   iamRoleStatements:
     - Effect: Allow

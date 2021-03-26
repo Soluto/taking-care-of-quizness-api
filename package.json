@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"unit tests have not been implemented\"",
     "build": "sls package",
-    "deploy": "sls deploy"
+    "deploy": "sls deploy --stage dev"
   },
   "dependencies": {
     "jsonwebtoken": "^8.5.1",

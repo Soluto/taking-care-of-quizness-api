@@ -47,21 +47,6 @@ functions:
           request:
             passThrough: WHEN_NO_TEMPLATES
 
-
-  list:
-    handler: app/list.list
-    events:
-      - http:
-          method: get
-          path: questions
-          integration: lambda
-          private: true
-          cors: true
-          authorizer:
-            arn: ${self:provider.environment.AUTHORIZER_ARN}
-          request:
-            passThrough: WHEN_NO_TEMPLATES
-
 resources:
   Resources:
     QuestionsDynamoDbTable:
@@ -101,14 +86,4 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
-    ApiGatewayMethodQuestionsPost:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationScopes:
-          - quizResourceServer/questions.write
-    ApiGatewayMethodQuestionsGet:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationScopes:
-          - quizResourceServer/questions.read
 
